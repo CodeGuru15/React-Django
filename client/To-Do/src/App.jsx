@@ -1,12 +1,20 @@
 import "./App.css";
-import Navbar from "./components/Navbar";
+import MyNavbar from "./components/Navbar";
 import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import { Route, Routes } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
     <>
-      <Navbar />
-      <Home />
+      <MyNavbar />
+      <Routes>
+        <Route path="/home" element={<Home />}></Route>
+        <Route path="/about" element={<About />}></Route>
+        <Route path="/contact" element={<Contact />}></Route>
+      </Routes>
     </>
   );
 }

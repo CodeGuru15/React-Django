@@ -13,3 +13,5 @@ BACKEND:
 9. Create a views.py at the level of urls.py.
 10. Configure the views.py as per your requirement.
 11. Configure your urls as per your requirement in urls.py.
+
+To set up CORS in Django please follow the steps: https://pypi.org/project/django-cors-headers/

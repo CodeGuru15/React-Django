@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import dotenv from "dotenv";
-
-// dotenv.config();
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Home = () => {
   const [data, setData] = useState(null);
@@ -10,7 +10,9 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_SERVER_URL}`
+        );
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -18,13 +20,16 @@ const Home = () => {
     };
 
     fetchData();
-  }, []);
+  }, [data]);
 
   return (
-    <div>
-      <h1>Hello World</h1>
-      <p>server data : {data}</p>
-    </div>
+    <Container className="mt-5">
+      <Row>
+        <Col>
+          <h1 className=" my-5 text-primary">{data}</h1>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
