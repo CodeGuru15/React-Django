@@ -1,6 +1,6 @@
 This project is build with React js ( frontend ) and Django ( backend ).
 
-BACKEND:
+\*\* BACKEND:
 
 1. Enter in the backend folder and create an virtual environment with the command "python -m venv <your env name>".
 2. Then activate the environment by running the command "<your env name>\Script\activate"
@@ -14,4 +14,24 @@ BACKEND:
 10. Configure the views.py as per your requirement.
 11. Configure your urls as per your requirement in urls.py.
 
-To set up CORS in Django please follow the steps: https://pypi.org/project/django-cors-headers/
+\*\* To set up CORS in Django please follow the steps: https://pypi.org/project/django-cors-headers/
+
+\*\* How to set up MySQL database with Django:
+
+1. Install MySQL on your system. Note the username and password.
+2. Start MYSQL server from command prompt by 'mysql -u <username> -p'
+3. Enter the password.
+4. If successful, it will start the server.
+5. Create a database.
+6. Then navigate to the setting.py and enter the following details:
+   DATABASES = {
+   'default': {
+   'ENGINE': 'django.db.backends.mysql',
+   'NAME': 'your database name',  
+    'USER': 'username',  
+    'PASSWORD': 'database password',  
+    'HOST': 'localhost',  
+    'PORT': '3306',  
+    }
+7. Then run 'python .\manage.py migrate' and it will create the defaults table as required.
+8. The database is successfully migrated with your project now.
