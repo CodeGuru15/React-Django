@@ -9,11 +9,11 @@ const MyNavbar = () => {
   return (
     <Navbar bg="primary" fixed="top">
       <Container>
-        <Navbar.Brand href="home" className="text-white fs-4">
+        <Navbar.Brand href="/" className="text-white fs-4">
           Logo
         </Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link href="home" className="text-white">
+          <Nav.Link href="/" className="text-white">
             Home
           </Nav.Link>
           <Nav.Link href="contact" className="text-white">
