@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'users',
     'tasks',
+    'rest_framework_swagger',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +67,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS=False
+
 
 ROOT_URLCONF = 'myproject.urls'
 

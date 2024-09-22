@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 const Home = () => {
   const [newTask, setNewTask] = useState("");
@@ -52,69 +51,93 @@ const Home = () => {
     setNewTask(e.target.value);
   };
 
-  // console.log(allTask);
+  const TaskRow = ({ id, task, createTime, modTime }) => {
+    const [updateTask, setUpdateTask] = useState("");
+    const [isEdit, setIsEdit] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
+
+    const handleEdit = () => {
+      setIsEdit(!isEdit);
+    };
+
+    const handleDelete = () => {
+      setIsDelete(!isDelete);
+    };
+    return (
+      <tr className=" text-center">
+        <th scope="row">{id}</th>
+        <td>{task}</td>
+        <td>{createTime}</td>
+        <td>{modTime}</td>
+        <button
+          type="button"
+          onClick={handleEdit}
+          className=" text-success border-0 "
+        >
+          <MdEdit />
+        </button>
+        <button
+          type="button"
+          onClick={handleDelete}
+          className=" text-danger border-0"
+        >
+          <MdDelete />
+        </button>
+      </tr>
+    );
+  };
 
   return (
-    <Container className="mt-5">
-      <Row className="">
-        <Col className="text-center">
-          <h1 className=" mt-5 text-primary">All Tasks</h1>
-        </Col>
-      </Row>
-      <Row className=" my-2">
-        <Col>
+    <div className="mt-5 py-2">
+      <div className=" flex-row text-center py-1">
+        <h1 className=" mt-5 text-primary">All Tasks</h1>
+      </div>
+      <div className=" my-2 row">
+        <div className=" col my-auto">
           <input
             type="text"
             placeholder="Your task"
             onChange={handleChange}
             value={newTask}
-            className=" p-1 text-center"
+            className=" p-1 text-center mx-auto d-flex"
           />
-        </Col>
-        <Col>
+        </div>
+        <div className=" col">
           <Button
             type="submit"
             variant="outline-primary"
             onClick={handleSubmit}
+            className="d-flex mx-auto"
           >
             Submit
           </Button>
-        </Col>
-      </Row>
-      <Row className="">
-        <Col className=" border text-center">
-          <p className=" my-2 fs-6">SL</p>
-        </Col>
-        <Col className=" border text-center">
-          <p className=" my-2 fs-6">Details</p>
-        </Col>
-        <Col className=" border text-center">
-          <p className=" my-2 fs-6">Created</p>
-        </Col>
-        <Col className=" border text-center">
-          <p className=" my-2 fs-6">Modified</p>
-        </Col>
-      </Row>
-      {allTask.length > 0 &&
-        allTask.map((item, index) => {
-          return (
-            <Row className="" key={index}>
-              <Col className=" border text-center">
-                <p className=" my-2 fs-6">{index + 1}</p>
-              </Col>
-              <Col className=" border text-center">
-                <p className=" my-2 fs-6">{item.details}</p>
-              </Col>
-              <Col className=" border text-center">
-                <p className=" my-2 fs-6">{item.created}</p>
-              </Col>
-              <Col className=" border text-center">
-                <p className=" my-2 fs-6">{item.modified}</p>
-              </Col>
-            </Row>
-          );
-        })}
-    </Container>
+        </div>
+      </div>
+      <table className="table table-striped table-hover">
+        <thead>
+          <tr className=" text-center">
+            <th scope="col">SL.</th>
+            <th scope="col">Task</th>
+            <th scope="col">Created</th>
+            <th scope="col">Modified</th>
+          </tr>
+        </thead>
+        <tbody>
+          {allTask.length > 0 &&
+            allTask.map((item, index) => {
+              return (
+                <TaskRow
+                  key={index}
+                  id={index + 1}
+                  task={item.details}
+                  createTime={item.created}
+                  modTime={item.modified}
+                />
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

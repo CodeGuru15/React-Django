@@ -1,4 +1,3 @@
-import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
@@ -8,7 +7,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 const MyNavbar = () => {
   return (
     <Navbar bg="primary" fixed="top">
-      <Container>
+      <div className=" container-fluid">
         <Navbar.Brand href="/" className="text-white fs-4">
           Logo
         </Navbar.Brand>
@@ -41,7 +40,7 @@ const MyNavbar = () => {
           />
           <Button variant="outline-light">Search</Button>
         </Form>
-      </Container>
+      </div>
     </Navbar>
   );
 };

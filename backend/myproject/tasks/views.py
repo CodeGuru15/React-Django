@@ -7,6 +7,7 @@ from .models import Task
 import datetime
 import json
 
+
 @csrf_exempt
 def add_task(request):
   if request.method == 'POST':
@@ -31,3 +32,10 @@ def update_task(request,pk):
     select_task.details = updated_details
     select_task.save()
     return HttpResponse('Task has been updated')
+  
+@csrf_exempt
+def delete_task(request,pk):
+  if request.method == 'POST':
+    select_task = Task.objects.get(id=pk)
+    select_task.delete()
+    return HttpResponse('Task delete')
