@@ -7,26 +7,22 @@ import { MdDelete } from "react-icons/md";
 const Home = () => {
   const [newTask, setNewTask] = useState("");
   const [allTask, setAllTask] = useState([]);
+  const [counter, setCounter] = useState(0);
 
   const fetchTasks = async () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/`
       );
-      return res.data;
+      setAllTask(res.data);
     } catch (error) {
       console.log(error.message);
     }
   };
 
-  const getTasks = async () => {
-    console.log("tasks fetched");
-    const taskData = await fetchTasks();
-    setAllTask(taskData);
-  };
-
   useEffect(() => {
-    getTasks();
+    setCounter(counter + 1);
+    fetchTasks();
   }, []);
 
   const handleSubmit = async () => {
@@ -51,38 +47,91 @@ const Home = () => {
     setNewTask(e.target.value);
   };
 
-  const TaskRow = ({ id, task, createTime, modTime }) => {
-    const [updateTask, setUpdateTask] = useState("");
+  const TaskRow = ({ id, task, createTime, modTime, pk }) => {
+    const [updateTask, setUpdateTask] = useState(task);
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
 
-    const handleEdit = () => {
+    const handleEdit = async (id) => {
+      if (updateTask === "") {
+        alert("Please enter a valid task");
+      } else {
+        const res = await axios.put(
+          `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/update${id}/`,
+          updateTask
+        );
+        alert(res.data);
+      }
       setIsEdit(!isEdit);
     };
 
-    const handleDelete = () => {
-      setIsDelete(!isDelete);
+    const handleDelete = async (id) => {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/delete${id}/`
+      );
+      alert(res.data);
+      setIsDelete(false);
     };
     return (
       <tr className=" text-center">
         <th scope="row">{id}</th>
-        <td>{task}</td>
+        <td>
+          {isEdit ? (
+            <input
+              className=" px-2 w-50"
+              type="text"
+              onChange={(e) => setUpdateTask(e.target.value)}
+              value={updateTask}
+            />
+          ) : (
+            task
+          )}
+        </td>
         <td>{createTime}</td>
         <td>{modTime}</td>
-        <button
-          type="button"
-          onClick={handleEdit}
-          className=" text-success border-0 "
-        >
-          <MdEdit />
-        </button>
-        <button
-          type="button"
-          onClick={handleDelete}
-          className=" text-danger border-0"
-        >
-          <MdDelete />
-        </button>
+        {isEdit ? (
+          <td className=" position-absolute d-flex gap-3">
+            <span
+              role="button"
+              onClick={() => {
+                setIsEdit(false);
+                setUpdateTask(task);
+              }}
+            >
+              Cancel
+            </span>
+            <span role="button" onClick={() => handleEdit(pk)}>
+              Update
+            </span>
+          </td>
+        ) : (
+          <td
+            role="button"
+            onClick={() => setIsEdit(true)}
+            className=" text-success border-0 "
+          >
+            <MdEdit />
+          </td>
+        )}
+
+        {isDelete ? (
+          <td className=" position-absolute d-flex gap-3">
+            <span role="button" onClick={() => setIsDelete(false)}>
+              Cancel
+            </span>
+            <span role="button" onClick={() => handleDelete(pk)}>
+              Delete
+            </span>
+          </td>
+        ) : (
+          <td
+            role="button"
+            onClick={() => setIsDelete(true)}
+            className=" text-danger border-0"
+          >
+            <MdDelete />
+          </td>
+        )}
       </tr>
     );
   };
@@ -92,6 +141,10 @@ const Home = () => {
       <div className=" flex-row text-center py-1">
         <h1 className=" mt-5 text-primary">All Tasks</h1>
       </div>
+      <div>
+        Counter <span>{counter}</span>
+      </div>
+
       <div className=" my-2 row">
         <div className=" col my-auto">
           <input
@@ -132,6 +185,7 @@ const Home = () => {
                   task={item.details}
                   createTime={item.created}
                   modTime={item.modified}
+                  pk={item.id}
                 />
               );
             })}

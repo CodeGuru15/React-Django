@@ -18,15 +18,17 @@ def add_task(request):
     return HttpResponse('New task added successfully') 
 
 def all_tasks(request):
-  allData = Task.objects.all().values()
-  json_data = json.dumps(list(allData), cls=DjangoJSONEncoder) 
-  return HttpResponse(json_data)
+  if request.method == 'GET':
+    allData = Task.objects.all().values()
+    json_data = json.dumps(list(allData), cls=DjangoJSONEncoder) 
+    return HttpResponse(json_data)
 
 def single_task(request, pk):
   return HttpResponse(f'Task with id {pk}')
 
+@csrf_exempt
 def update_task(request,pk):
-  if request.method == 'POST':
+  if request.method == 'PUT':
     select_task = Task.objects.get(id=pk)
     updated_details = request.body.decode('utf-8')
     select_task.details = updated_details
@@ -35,7 +37,7 @@ def update_task(request,pk):
   
 @csrf_exempt
 def delete_task(request,pk):
-  if request.method == 'POST':
+  if request.method == 'DELETE':
     select_task = Task.objects.get(id=pk)
     select_task.delete()
     return HttpResponse('Task delete')
