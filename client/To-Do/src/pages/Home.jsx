@@ -3,11 +3,11 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import moment from "moment";
 
 const Home = () => {
   const [newTask, setNewTask] = useState("");
   const [allTask, setAllTask] = useState([]);
-  const [counter, setCounter] = useState(0);
 
   const fetchTasks = async () => {
     try {
@@ -25,7 +25,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setCounter(counter + 1);
     fetchTasks();
   }, []);
 
@@ -148,9 +147,6 @@ const Home = () => {
       <div className=" flex-row text-center py-1">
         <h1 className=" mt-5 text-primary">All Tasks</h1>
       </div>
-      <div>
-        Counter <span>{counter}</span>
-      </div>
 
       <div className=" my-2 row">
         <div className=" col my-auto">
@@ -190,8 +186,8 @@ const Home = () => {
                   key={index}
                   id={index + 1}
                   task={item.details}
-                  createTime={item.created}
-                  modTime={item.modified}
+                  createTime={moment(item.created).format("MMM DD YYYY h:mm A")}
+                  modTime={moment(item.modified).format("MMM DD YYYY h:mm A")}
                   pk={item.id}
                 />
               );
