@@ -20,6 +20,10 @@ const Home = () => {
     }
   };
 
+  const handleuUpdateTask = async () => {
+    await fetchTasks();
+  };
+
   useEffect(() => {
     setCounter(counter + 1);
     fetchTasks();
@@ -35,6 +39,7 @@ const Home = () => {
           newTask
         );
         alert(response.data);
+        handleuUpdateTask();
       } catch (error) {
         console.error(error);
       }
@@ -61,6 +66,7 @@ const Home = () => {
           updateTask
         );
         alert(res.data);
+        handleuUpdateTask();
       }
       setIsEdit(!isEdit);
     };
@@ -70,6 +76,7 @@ const Home = () => {
         `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/delete${id}/`
       );
       alert(res.data);
+      handleuUpdateTask();
       setIsDelete(false);
     };
     return (
