@@ -15,7 +15,7 @@ def add_task(request):
     # Create a new Task instance and save it to the database
     new_task = Task(details=details)
     new_task.save()
-    return HttpResponse('New task added successfully') 
+    return HttpResponse('New task added successfully!') 
 
 def all_tasks(request):
   if request.method == 'GET':
@@ -33,11 +33,11 @@ def update_task(request,pk):
     updated_details = request.body.decode('utf-8')
     select_task.details = updated_details
     select_task.save()
-    return HttpResponse('Task has been updated')
+    return HttpResponse('Task has been updated successfully!')
   
 @csrf_exempt
 def delete_task(request,pk):
   if request.method == 'DELETE':
     select_task = Task.objects.get(id=pk)
     select_task.delete()
-    return HttpResponse('Task delete')
+    return HttpResponse('Task deleted successfully!')

@@ -8,6 +8,9 @@ import moment from "moment";
 const Home = () => {
   const [newTask, setNewTask] = useState("");
   const [allTask, setAllTask] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchTasks = async () => {
     try {
@@ -30,14 +33,14 @@ const Home = () => {
 
   const handleSubmit = async () => {
     if (newTask === "") {
-      alert("Please enter a valid task");
+      setErrorMessage("Please enter a valid task");
     } else {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/addtask/`,
           newTask
         );
-        alert(response.data);
+        setSuccessMessage(response.data);
         handleuUpdateTask();
       } catch (error) {
         console.error(error);
@@ -51,6 +54,19 @@ const Home = () => {
     setNewTask(e.target.value);
   };
 
+  useEffect(() => {
+    const handleSuccess = () => {
+      // console.log(successMessage);
+      setTimeout(() => setSuccessMessage(""), 3000);
+    };
+    const handleError = () => {
+      // console.log(errorMessage);
+      setTimeout(() => setErrorMessage(""), 3000);
+    };
+    successMessage != "" && handleSuccess();
+    errorMessage != "" && handleError();
+  }, [successMessage, errorMessage]);
+
   const TaskRow = ({ id, task, createTime, modTime, pk }) => {
     const [updateTask, setUpdateTask] = useState(task);
     const [isEdit, setIsEdit] = useState(false);
@@ -58,13 +74,13 @@ const Home = () => {
 
     const handleEdit = async (id) => {
       if (updateTask === "") {
-        alert("Please enter a valid task");
+        setErrorMessage("Please enter a valid task");
       } else {
         const res = await axios.put(
           `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/update${id}/`,
           updateTask
         );
-        alert(res.data);
+        setSuccessMessage(res.data);
         handleuUpdateTask();
       }
       setIsEdit(!isEdit);
@@ -74,7 +90,7 @@ const Home = () => {
       const res = await axios.delete(
         `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/delete${id}/`
       );
-      alert(res.data);
+      setSuccessMessage(res.data);
       handleuUpdateTask();
       setIsDelete(false);
     };
@@ -143,11 +159,22 @@ const Home = () => {
   };
 
   return (
-    <div className="mt-5 py-2">
+    <div className="mt-5 py-2 position-relative">
       <div className=" flex-row text-center py-1">
-        <h1 className=" mt-5 text-primary">All Tasks</h1>
+        <h1 className=" mt-5 text-primary">To Do List</h1>
       </div>
-
+      <div className=" flex-row fs-5 fw-bold text-center top-0 mt-4 w-100 position-absolute z-9999">
+        {(successMessage ? (
+          <span className=" text-success">{successMessage} </span>
+        ) : (
+          ""
+        )) ||
+          (errorMessage ? (
+            <span className=" text-danger">{errorMessage}</span>
+          ) : (
+            ""
+          ))}
+      </div>
       <div className=" my-2 row">
         <div className=" col my-auto">
           <input
