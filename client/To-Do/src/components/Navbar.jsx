@@ -3,8 +3,19 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { useContext, useState } from "react";
+import TaskContex from "../Context/TaskContext";
 
 const MyNavbar = () => {
+  const { setAllTask, fetchTask } = useContext(TaskContex);
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log(searchText);
+    setSearchText("");
+  };
+
   return (
     <Navbar bg="primary" fixed="top">
       <div className=" container-fluid">
@@ -37,8 +48,12 @@ const MyNavbar = () => {
             placeholder="Search"
             className="me-2"
             aria-label="Search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
-          <Button variant="outline-light">Search</Button>
+          <Button variant="outline-light" onClick={handleSearch}>
+            Search
+          </Button>
         </Form>
       </div>
     </Navbar>

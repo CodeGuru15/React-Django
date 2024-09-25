@@ -41,3 +41,11 @@ def delete_task(request,pk):
     select_task = Task.objects.get(id=pk)
     select_task.delete()
     return HttpResponse('Task deleted successfully!')
+  
+@csrf_exempt
+def search_task(request):
+  if request.method == 'POST':
+    search_text = request.body.decode('utf-8')
+    search_task = Task.objects.filter(details__iexact = search_text).values()
+    json_data = json.dumps(list(search_task), cls=DjangoJSONEncoder) 
+    return HttpResponse(json_data)

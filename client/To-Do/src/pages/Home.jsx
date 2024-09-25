@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import moment from "moment";
+import Loader from "../components/Loader";
+import TaskContex from "../Context/TaskContext";
 
 const Home = () => {
+  const {
+    allTask,
+    fetchTasks,
+    loading,
+    setLoading,
+    successMessage,
+    setSuccessMessage,
+    errorMessage,
+    setErrorMessage,
+  } = useContext(TaskContex);
   const [newTask, setNewTask] = useState("");
-  const [allTask, setAllTask] = useState([]);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const fetchTasks = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/`
-      );
-      setAllTask(res.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   const handleuUpdateTask = async () => {
     await fetchTasks();
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
   const handleSubmit = async () => {
     if (newTask === "") {
       setErrorMessage("Please enter a valid task");
     } else {
+      setLoading(true);
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/addtask/`,
@@ -43,6 +37,7 @@ const Home = () => {
         setSuccessMessage(response.data);
         handleuUpdateTask();
       } catch (error) {
+        setErrorMessage("Something went wrong. Please try again!");
         console.error(error);
       }
     }
@@ -56,11 +51,9 @@ const Home = () => {
 
   useEffect(() => {
     const handleSuccess = () => {
-      // console.log(successMessage);
       setTimeout(() => setSuccessMessage(""), 3000);
     };
     const handleError = () => {
-      // console.log(errorMessage);
       setTimeout(() => setErrorMessage(""), 3000);
     };
     successMessage != "" && handleSuccess();
@@ -72,10 +65,11 @@ const Home = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
 
-    const handleEdit = async (id) => {
+    const handleUpdate = async (id) => {
       if (updateTask === "") {
         setErrorMessage("Please enter a valid task");
       } else {
+        setLoading(true);
         const res = await axios.put(
           `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/update${id}/`,
           updateTask
@@ -94,13 +88,16 @@ const Home = () => {
       handleuUpdateTask();
       setIsDelete(false);
     };
+
     return (
-      <tr className=" text-center">
-        <th scope="row">{id}</th>
-        <td>
+      <tr className=" ">
+        <td scope="row" className="text-center">
+          {id}
+        </td>
+        <td className=" px-2">
           {isEdit ? (
             <input
-              className=" px-2 w-50"
+              className=" px-1 w-75"
               type="text"
               onChange={(e) => setUpdateTask(e.target.value)}
               value={updateTask}
@@ -109,11 +106,11 @@ const Home = () => {
             task
           )}
         </td>
-        <td>{createTime}</td>
-        <td>{modTime}</td>
+        <td className="">{createTime}</td>
+        <td className="">{modTime}</td>
         {isEdit ? (
-          <td className=" position-absolute d-flex gap-3">
-            <span
+          <td className=" position-absolute">
+            <div
               role="button"
               onClick={() => {
                 setIsEdit(false);
@@ -121,15 +118,17 @@ const Home = () => {
               }}
             >
               Cancel
-            </span>
-            <span role="button" onClick={() => handleEdit(pk)}>
+            </div>
+            <div role="button" onClick={() => handleUpdate(pk)}>
               Update
-            </span>
+            </div>
           </td>
         ) : (
           <td
             role="button"
-            onClick={() => setIsEdit(true)}
+            onClick={() => {
+              setIsEdit(true);
+            }}
             className=" text-success border-0 "
           >
             <MdEdit />
@@ -138,12 +137,12 @@ const Home = () => {
 
         {isDelete ? (
           <td className=" position-absolute d-flex gap-3">
-            <span role="button" onClick={() => setIsDelete(false)}>
+            <div role="button" onClick={() => setIsDelete(false)}>
               Cancel
-            </span>
-            <span role="button" onClick={() => handleDelete(pk)}>
+            </div>
+            <div role="button" onClick={() => handleDelete(pk)}>
               Delete
-            </span>
+            </div>
           </td>
         ) : (
           <td
@@ -163,7 +162,7 @@ const Home = () => {
       <div className=" flex-row text-center py-1">
         <h1 className=" mt-5 text-primary">To Do List</h1>
       </div>
-      <div className=" flex-row fs-5 fw-bold text-center top-0 mt-4 w-100 position-absolute z-9999">
+      <div className=" flex-row fs-5 text-center top-0 mt-4 w-100 position-absolute z-9999">
         {(successMessage ? (
           <span className=" text-success">{successMessage} </span>
         ) : (
@@ -196,31 +195,37 @@ const Home = () => {
           </Button>
         </div>
       </div>
-      <table className="table table-striped table-hover">
-        <thead>
-          <tr className=" text-center">
-            <th scope="col">SL.</th>
-            <th scope="col">Task</th>
-            <th scope="col">Created</th>
-            <th scope="col">Modified</th>
-          </tr>
-        </thead>
-        <tbody>
-          {allTask.length > 0 &&
-            allTask.map((item, index) => {
-              return (
-                <TaskRow
-                  key={index}
-                  id={index + 1}
-                  task={item.details}
-                  createTime={moment(item.created).format("MMM DD YYYY h:mm A")}
-                  modTime={moment(item.modified).format("MMM DD YYYY h:mm A")}
-                  pk={item.id}
-                />
-              );
-            })}
-        </tbody>
-      </table>
+      {!loading ? (
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr className=" text-center">
+              <th scope="col">SL.</th>
+              <th scope="col">Task</th>
+              <th scope="col">Created</th>
+              <th scope="col">Modified</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allTask.length > 0 &&
+              allTask.map((item, index) => {
+                return (
+                  <TaskRow
+                    key={index}
+                    id={index + 1}
+                    task={item.details}
+                    createTime={moment(item.created).format(
+                      "MMM DD YYYY h:mm A"
+                    )}
+                    modTime={moment(item.modified).format("MMM DD YYYY h:mm A")}
+                    pk={item.id}
+                  />
+                );
+              })}
+          </tbody>
+        </table>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 };
