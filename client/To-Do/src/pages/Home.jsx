@@ -17,6 +17,9 @@ const Home = () => {
     setSuccessMessage,
     errorMessage,
     setErrorMessage,
+    setSearchText,
+    isSeached,
+    setIsSearched,
   } = useContext(TaskContex);
   const [newTask, setNewTask] = useState("");
 
@@ -28,20 +31,26 @@ const Home = () => {
     if (newTask === "") {
       setErrorMessage("Please enter a valid task");
     } else {
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/addtask/`,
-          newTask
-        );
-        setSuccessMessage(response.data);
-        handleuUpdateTask();
-      } catch (error) {
-        setErrorMessage("Something went wrong. Please try again!");
-        console.error(error);
+      if (newTask.length < 3) {
+        setErrorMessage("Please enter minimum 3 characters");
+      } else {
+        setLoading(true);
+        setIsSearched(false);
+        setSearchText("");
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/addtask/`,
+            newTask
+          );
+          setSuccessMessage(response.data);
+          handleuUpdateTask();
+        } catch (error) {
+          setErrorMessage("Something went wrong. Please try again!");
+          console.error(error);
+        }
+        setNewTask("");
       }
     }
-    setNewTask("");
   };
 
   const handleChange = async (e) => {
@@ -76,6 +85,8 @@ const Home = () => {
         );
         setSuccessMessage(res.data);
         handleuUpdateTask();
+        setIsSearched(false);
+        setSearchText("");
       }
       setIsEdit(!isEdit);
     };
@@ -87,6 +98,8 @@ const Home = () => {
       setSuccessMessage(res.data);
       handleuUpdateTask();
       setIsDelete(false);
+      setIsSearched(false);
+      setSearchText("");
     };
 
     return (
@@ -178,7 +191,7 @@ const Home = () => {
         <div className=" col my-auto">
           <input
             type="text"
-            placeholder="Your task"
+            placeholder="Add New Task"
             onChange={handleChange}
             value={newTask}
             className=" p-1 text-center mx-auto d-flex"
@@ -195,6 +208,19 @@ const Home = () => {
           </Button>
         </div>
       </div>
+      {isSeached ? (
+        <Button
+          variant="outline-primary"
+          onClick={() => {
+            setIsSearched(false);
+            setSearchText("");
+            fetchTasks();
+          }}
+          className=""
+        >
+          Clear Search
+        </Button>
+      ) : null}
       {!loading ? (
         <table className="table table-striped table-hover">
           <thead>

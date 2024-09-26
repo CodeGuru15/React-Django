@@ -3,16 +3,52 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TaskContex from "../Context/TaskContext";
+import axios from "axios";
 
 const MyNavbar = () => {
-  const { setAllTask, fetchTask } = useContext(TaskContex);
-  const [searchText, setSearchText] = useState("");
+  const {
+    allTask,
+    setAllTask,
+    fetchTasks,
+    isSeached,
+    setIsSearched,
+    searchText,
+    setSearchText,
+    setErrorMessage,
+  } = useContext(TaskContex);
 
-  const handleSearch = (e) => {
+  const getSearchTask = async () => {
+    if (searchText.length < 3) {
+      setErrorMessage("Please enter minimum 3 characters");
+    } else {
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_BACKEND_SERVER_URL}/tasks/search/`,
+          searchText
+        );
+        setAllTask(res.data);
+        setIsSearched(true);
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isSeached && allTask.length === 0) {
+      setErrorMessage("No Data Available");
+      setIsSearched(false);
+      fetchTasks();
+    }
+  }, [isSeached]);
+
+  const handleSearch = async (e) => {
     e.preventDefault();
-    console.log(searchText);
+    searchText != ""
+      ? getSearchTask()
+      : setErrorMessage("Please enter a search value");
     setSearchText("");
   };
 

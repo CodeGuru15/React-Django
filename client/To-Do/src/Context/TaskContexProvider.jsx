@@ -4,9 +4,11 @@ import axios from "axios";
 
 const TaskContexProvider = ({ children }) => {
   const [allTask, setAllTask] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSeached, setIsSearched] = useState(false);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -37,6 +39,10 @@ const TaskContexProvider = ({ children }) => {
         setSuccessMessage,
         errorMessage,
         setErrorMessage,
+        searchText,
+        setSearchText,
+        isSeached,
+        setIsSearched,
       }}
     >
       {children}

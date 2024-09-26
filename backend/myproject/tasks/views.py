@@ -46,6 +46,6 @@ def delete_task(request,pk):
 def search_task(request):
   if request.method == 'POST':
     search_text = request.body.decode('utf-8')
-    search_task = Task.objects.filter(details__iexact = search_text).values()
+    search_task = Task.objects.filter(details__icontains = search_text).values()
     json_data = json.dumps(list(search_task), cls=DjangoJSONEncoder) 
     return HttpResponse(json_data)
