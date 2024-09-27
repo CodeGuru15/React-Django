@@ -6,6 +6,8 @@ import { MdDelete } from "react-icons/md";
 import moment from "moment";
 import Loader from "../components/Loader";
 import TaskContex from "../Context/TaskContext";
+import { csrftoken } from "../csrfToken";
+// import CSRFTOKEN from "../components/CSRFToken";
 
 const Home = () => {
   const {

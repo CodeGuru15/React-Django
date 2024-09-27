@@ -17,17 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from . import views
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view as swagger_get_schema_view
 
-
-
-
+schema_view = swagger_get_schema_view(
+    openapi.Info(
+        title="Swagger API Documentation",
+        default_version='1.0.0',
+        description="API test documentation",
+    ),
+    public=True,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('docs/', schema_view),
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
     path('users/',include('users.urls')),
     path('tasks/',include('tasks.urls')),
+    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
 ]

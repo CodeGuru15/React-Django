@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from .models import Task
 import datetime
 import json

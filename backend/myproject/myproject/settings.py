@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'users',
     'tasks',
-    'rest_framework_swagger',
     'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 CORS_ALLOWED_ORIGINS = [

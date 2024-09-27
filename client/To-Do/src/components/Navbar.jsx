@@ -39,8 +39,8 @@ const MyNavbar = () => {
   useEffect(() => {
     if (isSeached && allTask.length === 0) {
       setErrorMessage("No Data Available");
-      setIsSearched(false);
-      fetchTasks();
+      // setIsSearched(false);
+      // fetchTasks();
     }
   }, [isSeached]);
 
@@ -49,7 +49,7 @@ const MyNavbar = () => {
     searchText != ""
       ? getSearchTask()
       : setErrorMessage("Please enter a search value");
-    setSearchText("");
+    // setSearchText("");
   };
 
   return (
